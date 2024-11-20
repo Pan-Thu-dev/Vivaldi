@@ -1,6 +1,6 @@
 from flask import Flask, render_template, request, redirect, url_for, session, flash
 from flask_sqlalchemy import SQLAlchemy
-from datetime import datetime, timedelta
+from datetime import datetime, timedelta, timezone
 import os
 import random
 import string
@@ -119,7 +119,7 @@ def login():
         if user and user.is_active and check_password_hash(user.password, password):
             session.permanent = True
             session["user_id"] = user.id
-            session["start_time"] = datetime.now().isoformat()
+            session["start_time"] = datetime.now(timezone.utc).isoformat()
             flash("Logged in successfully.")
             return redirect(url_for("index"))
         elif user and not user.is_active:
@@ -150,9 +150,18 @@ def signup():
     if request.method == "POST":
         email = request.form.get("email")
         username = request.form.get("username")
-        password = generate_password_hash(request.form.get("password"))
+        password = request.form.get("password")
+        email_regex = r'^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$'
 
-        # Check if the email is already registered
+        if not email or not username or not password:
+            flash("All fields are required.")
+            return redirect(url_for("signup"))
+        if not re.match(email_regex, email):
+            flash("Invalid email format.")
+            return redirect(url_for("signup"))
+
+        hashed_password = generate_password_hash(password)
+
         if User.query.filter_by(email=email).first():
             flash("Email is already registered. Please Log in.")
             return redirect(url_for("login"))
@@ -166,7 +175,7 @@ def signup():
 
         # Create new user (inactive by default)
         new_user = User(
-            email=email, username=username, password=password,
+            email=email, username=username, password=hashed_password,
             is_active=False, confirmation_code=confirmation_code
         )
         db.session.add(new_user)
