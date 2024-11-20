@@ -1,6 +1,4 @@
-from flask import request, flash, redirect, url_for
 from flask import Flask, render_template, request, redirect, url_for, session, flash
-from flask_mail import Mail
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime, timedelta
 import os
