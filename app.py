@@ -277,7 +277,7 @@ def close_account():
     if request.method == "POST":
         password = request.form.get("password")
 
-        if check_password_hash(user.password_hash, password):
+        if check_password_hash(user.password, password):
             # Delete all transactions associated with the user
             Transaction.query.filter_by(user_id=user.id).delete()
 
