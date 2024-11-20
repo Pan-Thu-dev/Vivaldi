@@ -1,0 +1,118 @@
+{% extends "layout.html" %}
+
+{% block title %}Dashboard{% endblock %}
+
+{% block content %}
+<div class="container my-5">
+    <!-- Welcome Header -->
+    <div class="text-center mb-5">
+        <h1 class="display-4">Welcome, {{ user.username | capitalize }}!</h1>
+        <p class="lead">Manage your finances with ease and security.</p>
+    </div>
+
+    <!-- User Info Cards -->
+    <div class="row g-4">
+        <!-- Balance Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Current Balance</h5>
+                    <p class="card-text display-6 text-primary fw-bold">
+                        {{ get_currency_symbol(user.currency) }}{{ convert_currency(user.balance, "USD", user.currency)
+                        }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Deposits Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Deposits This Month</h5>
+                    <p class="card-text h4 text-success fw-bold">
+                        {{ get_currency_symbol(user.currency) }}{{ convert_currency(total_deposits, "USD",
+                        user.currency) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Total Withdrawals Card -->
+        <div class="col-lg-4 col-md-6">
+            <div class="card shadow border-0 text-center">
+                <div class="card-body">
+                    <h5 class="card-title">Withdrawals This Month</h5>
+                    <p class="card-text h4 text-danger fw-bold">
+                        {{ get_currency_symbol(user.currency) }}{{ convert_currency(total_withdrawals, "USD",
+                        user.currency) }}
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Interest Info -->
+    <div class="mt-4 text-center">
+        <p class="h5">Your Interest: <span class="text-info fw-bold">{{ get_currency_symbol(user.currency) }}{{
+                convert_currency(interest, "USD", user.currency) | round(2) }}</span></p>
+    </div>
+
+    <!-- Action Buttons -->
+    <div class="text-center mt-5">
+        <a href="{{ url_for('transaction') }}" class="btn btn-primary btn-lg mx-2">
+            <i class="fas fa-wallet"></i> Perform Transaction
+        </a>
+        <a href="{{ url_for('history') }}" class="btn btn-secondary btn-lg mx-2">
+            <i class="fas fa-history"></i> View History
+        </a>
+    </div>
+</div>
+
+<!-- Session Countdown Timer -->
+<div class="overlay" id="logout-timer">
+    <small>Session expires in <span id="countdown-timer" class="text-danger fw-bold"></span></small>
+</div>
+
+<!-- currency chage -->>
+<div class="overlay" id="currency-change">
+    <form method="POST" action="{{ url_for('change_currency') }}">
+        <div class="form-group">
+            <label for="currency" class="font-weight-bold mb-2">Current Currency:</label>
+            <select name="currency" id="currency" class="form-select" onchange="this.form.submit()">
+                <option value="USD" {% if user.currency=='USD' %}selected{% endif %}>USD</option>
+                <option value="EUR" {% if user.currency=='EUR' %}selected{% endif %}>EUR</option>
+                <option value="GBP" {% if user.currency=='GBP' %}selected{% endif %}>GBP</option>
+            </select>
+        </div>
+    </form>
+</div>
+
+
+<!-- Countdown Timer Script -->
+<script>
+    // Session start time and lifetime in seconds
+    const sessionStartTime = new Date("{{ session_start_time }}").getTime();
+    const sessionLifetime = {{ session_lifetime }} * 1000;
+
+    function updateCountdown() {
+        const countdownElement = document.getElementById('countdown-timer');
+        const currentTime = new Date().getTime();
+        const elapsedTime = currentTime - sessionStartTime;
+        const remainingTime = sessionLifetime - elapsedTime;
+
+        if (remainingTime > 0) {
+            // Calculate minutes and seconds
+            const minutes = Math.floor(remainingTime / 1000 / 60);
+            const seconds = Math.floor((remainingTime / 1000) % 60);
+            countdownElement.textContent = `${minutes}m ${seconds}s`;
+        } else {
+            window.location.href = "{{ url_for('logout') }}?expired=true";
+        }
+    }
+
+    // Update countdown every second
+    setInterval(updateCountdown, 1000);
+</script>
+
+{% endblock %}

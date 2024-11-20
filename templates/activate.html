@@ -1,0 +1,22 @@
+{% extends "layout.html" %}
+
+{% block title %}Activate{% endblock %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-6">
+        <h2>Activate Your Account</h2>
+        <form action="{{ url_for('activate_account') }}" method="POST">
+            <div class="mb-3">
+                <label for="email" class="form-label">Email</label>
+                <input type="email" class="form-control" id="email" name="email" required>
+            </div>
+            <div class="mb-3">
+                <label for="confirmation_code" class="form-label">Confirmation Code</label>
+                <input type="text" class="form-control" id="confirmation_code" name="confirmation_code" required>
+            </div>
+            <button type="submit" class="btn btn-primary">Activate</button>
+        </form>
+    </div>
+</div>
+{% endblock %}

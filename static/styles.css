@@ -1,0 +1,65 @@
+html,
+body {
+    height: 100%;
+}
+
+body {
+    font-family: 'Alata', sans-serif;
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+a,
+button,
+input,
+textarea {
+    font-family: inherit;
+}
+
+
+main {
+    flex: 1;
+}
+
+.overlay {
+    position: fixed;
+    background-color: #f8f9fa;
+    padding: 10px 15px;
+    border-radius: 8px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    font-size: 1rem;
+    color: #333;
+    z-index: 1000;
+}
+
+#logout-timer {
+    bottom: 130px;
+    right: 20px;
+}
+
+#currency-change {
+    bottom: 130px;
+    left: 20px
+}
+
+.sort-indicator {
+    margin: 0 5px;
+    color: #ffffff;
+    font-size: 1rem;
+}
+
+.active-sort {
+    color: #777777;
+    font-weight: bold;
+}
