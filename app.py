@@ -4,6 +4,7 @@ from datetime import datetime, timedelta, timezone
 import os
 import random
 import string
+import re
 from werkzeug.security import generate_password_hash, check_password_hash
 from helpers import send_email, login_required, convert_currency, get_currency_symbol, init_helpers
 
