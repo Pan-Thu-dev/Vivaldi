@@ -88,7 +88,13 @@ def get_currency_symbol(currency_code):
     currency_symbols = {
         'USD': '$',
         'EUR': '€',
-        'GBP': '£'
+        'GBP': '£',
+        'NZD': '$',
+        'AUD': '$',
+        'SGD': '$',
+        'CAD': '$',
+        'JPY': '¥',
+        'KRW': '₩'
     }
     # Default to empty string if not found
     return currency_symbols.get(currency_code, '')
